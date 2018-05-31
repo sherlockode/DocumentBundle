@@ -3,6 +3,7 @@
 namespace Sherlockode\DocumentBundle\Generator;
 
 use Sherlockode\DocumentBundle\Finder\TemplatePageFinderInterface;
+use Sherlockode\DocumentBundle\Model\Document;
 use Sherlockode\DocumentBundle\Model\Page;
 use Sherlockode\DocumentBundle\Pager\PagerInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -12,11 +13,6 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class Generator
 {
-    /**
-     * @var Page[]
-     */
-    private $pages = [];
-
     /**
      * @var EngineInterface
      */
@@ -33,11 +29,6 @@ class Generator
     private $templateFinder;
 
     /**
-     * @var array
-     */
-    private $defaultParams = [];
-
-    /**
      * Generator constructor.
      *
      * @param EngineInterface             $templateEngine
@@ -51,61 +42,27 @@ class Generator
         $this->templateFinder = $templateFinder;
     }
 
-    /**
-     * @return Page[]
-     */
-    public function getPages()
+    public function newDocument($templateFile)
     {
-        return $this->pages;
+        return new Document($templateFile, $this->templateFinder);
     }
 
     /**
-     * @param array $defaultParams
-     *
-     * @return $this
-     */
-    public function setDefaultParams($defaultParams = [])
-    {
-        $this->defaultParams = $defaultParams;
-
-        return $this;
-    }
-
-    /**
-     * @param string $code
-     * @param array  $parameters
-     * @param array  $options
-     *
-     * @return $this
-     */
-    public function addPage($code, array $parameters = [], array $options = [])
-    {
-        $file = $this->templateFinder->getTemplatePath($code);
-        $parameters = array_merge($this->defaultParams, $parameters);
-        $page = new Page($code, $file, $parameters);
-        $title = isset($options['title']) ? $options['title'] : $code;
-        $page->setTitle($title);
-        $this->pages[] = $page;
-
-        return $this;
-    }
-
-    /**
-     * @param string $template
-     * @param string $contentVariableName
+     * @param Document $document
+     * @param string   $contentVariableName
      *
      * @return string
      */
-    public function renderAll($template, $contentVariableName = 'content')
+    public function render(Document $document, $contentVariableName = 'content')
     {
-        $this->prepareIndexTable();
+        $this->prepareIndexTable($document);
 
         $content = '';
-        foreach ($this->pages as $page) {
+        foreach ($document->getPages() as $page) {
             $content .= $this->renderPage($page);
         }
 
-        return $this->templateEngine->render($template, [$contentVariableName => $content]);
+        return $this->templateEngine->render($document->getTemplate(), [$contentVariableName => $content]);
     }
 
     /**
@@ -120,10 +77,10 @@ class Generator
         return $this->templateEngine->render($page->getFile(), $parameters);
     }
 
-    private function prepareIndexTable()
+    private function prepareIndexTable(Document $document)
     {
         $currentPage = 1;
-        foreach ($this->pages as $page) {
+        foreach ($document->getPages() as $page) {
             $page->setPageNumber($currentPage);
             $this->pager->processPageCount($page);
             $currentPage += $page->getPageCount();
