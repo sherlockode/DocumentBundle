@@ -1,0 +1,23 @@
+{
+    "name": "sherlockode/document-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony bundle for multipage documents generation ",
+    "keywords": ["Document generation"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sherlockode",
+            "email": "contact@sherlockode.fr"
+        }
+    ],
+    "require": {
+        "php": "^5.5.9 || ^7.0",
+        "symfony/framework-bundle": "^3.0",
+        "symfony/templating": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sherlockode\\DocumentBundle\\": ""
+        }
+    }
+}
