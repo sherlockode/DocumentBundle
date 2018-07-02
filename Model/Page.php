@@ -7,7 +7,7 @@ use Sherlockode\DocumentBundle\Pager\IndexEntry;
 /**
  * Class Page
  */
-class Page
+class Page implements PageInterface
 {
     private $code;
     private $file;

@@ -4,7 +4,8 @@ namespace Sherlockode\DocumentBundle\Generator;
 
 use Sherlockode\DocumentBundle\Finder\TemplatePageFinderInterface;
 use Sherlockode\DocumentBundle\Model\Document;
-use Sherlockode\DocumentBundle\Model\Page;
+use Sherlockode\DocumentBundle\Model\DocumentInterface;
+use Sherlockode\DocumentBundle\Model\PageInterface;
 use Sherlockode\DocumentBundle\Pager\PagerInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -48,12 +49,12 @@ class Generator
     }
 
     /**
-     * @param Document $document
-     * @param string   $contentVariableName
+     * @param DocumentInterface $document
+     * @param string             $contentVariableName
      *
      * @return string
      */
-    public function render(Document $document, $contentVariableName = 'content')
+    public function render(DocumentInterface $document, $contentVariableName = 'content')
     {
         $this->prepareIndexTable($document);
 
@@ -66,18 +67,18 @@ class Generator
     }
 
     /**
-     * @param Page $page
+     * @param PageInterface $page
      *
      * @return string
      */
-    public function renderPage(Page $page)
+    public function renderPage(PageInterface $page)
     {
         $parameters = array_merge(['pageNumberStart' => $page->getPageNumber()], $page->getParameters());
 
         return $this->templateEngine->render($page->getFile(), $parameters);
     }
 
-    private function prepareIndexTable(Document $document)
+    private function prepareIndexTable(DocumentInterface $document)
     {
         $currentPage = 1;
         foreach ($document->getPages() as $page) {

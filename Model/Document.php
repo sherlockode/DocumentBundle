@@ -4,7 +4,7 @@ namespace Sherlockode\DocumentBundle\Model;
 
 use Sherlockode\DocumentBundle\Finder\TemplatePageFinderInterface;
 
-class Document
+class Document implements DocumentInterface
 {
     /**
      * @var string
