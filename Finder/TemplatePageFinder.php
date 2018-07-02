@@ -19,7 +19,7 @@ class TemplatePageFinder implements TemplatePageFinderInterface
      */
     private $pathPrefix;
 
-    public function __construct($outputFormat, $format, $extension, $pathPrefix)
+    public function __construct($outputFormat = 'html', $extension = 'twig', $pathPrefix = '')
     {
         $this->outputFormat = $outputFormat;
         $this->extension = $extension;
@@ -33,6 +33,6 @@ class TemplatePageFinder implements TemplatePageFinderInterface
      */
     public function getTemplatePath($code)
     {
-        return sprintf('%s/%s.%s.%s', $code, $this->prefix, $this->outputFormat, $this->extension);
+        return sprintf('%s/%s.%s.%s', $this->pathPrefix, $code, $this->outputFormat, $this->extension);
     }
 }
